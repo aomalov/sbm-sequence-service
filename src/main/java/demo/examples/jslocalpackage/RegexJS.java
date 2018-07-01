@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class RegexJS {
 
-    public static Set<String> gelLocalPackages(String jsFile) {
+    static Set<String> gelLocalPackages(String jsFile) {
         Pattern pattern = Pattern.compile("=\\s*require[(]\\s*['\"]([/~.]\\S+)['\"]");
 
         File file = new File(jsFile);
@@ -27,13 +27,19 @@ public class RegexJS {
         return results;
     }
 
-    public static void main(String[] args) {
+    public static Set<String> analyseFolder(String path) {
         ForkJoinPool pool = new ForkJoinPool();
-        FolderProcessor system = new FolderProcessor("./src/test/resources/js-libs", "js");
+        FolderProcessor system = new FolderProcessor(path, "js");
 
         pool.execute(system);
-        System.out.println(system.join());
+        Set<String> res=system.join();
         pool.shutdown();
+        return res;
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(analyseFolder("./src/test/resources/js-libs"));
     }
 
 }
